@@ -1,0 +1,129 @@
+Lessig 2016 Big Data Game Plan
+Team Members
+* @aaronlifshin => Aaron Lifshin => Lessig 2016, COO
+* @mdavid => M. David Peterson => Project Manager, Developer
+* @aschober => [REAL NAME?] => Mobile & Ad Tech Developer
+* @redbeard0x0a => Bryan Rehbein => Software Engineering += System Administration += DevOps
+* @furf: Dave Furfero => Lessig 2016, Tech Volunteer Coordinator
+* @bucchere => Chris Bucchere => Lessig 2016, Principal Tech Lead
+* @dmaust => David Maust => Data Scientist
+* @gg => Gabriel Grant => Lessig 2016, Tech Lead
+* @data_dan: Dan Acheson => Data Scientist
+
+
+Have I missed anybody?
+Proposed Weekly #Hangout Planning Session
+Every Sunday, 7 - 8 pm
+* Initially we all need to meet up to determine areas from the below tasks each of us want to specialize in. 
+   * We then need to assign each of the related tasks to our area of specialization.
+* Let’s discuss this during Saturday’s 11am PDT tech meeting.
+   * We could meet directly after Saturday mornings meeting if that would be more convenient for everyone.
+
+
+
+
+Technologies Being Used
+Confirmed
+* KISSmetrics. See below for KISSmetrics data points from @gg
+Proposed
+* Snowplow
+* Splunk
+
+
+Goals
+As per the meeting notes from from September 23rd Big Data meeting:
+
+
+* Goal to create software for better organizing and serving users
+* Identify user's passion issues (CFR does not inspire enough passion)
+* Present more relevant content to increase understanding of CFR, inspire passion and drive campaign objectives
+* Identify visitor's political skew, libertarian, progressive, etc.
+* Grow a database of supporters of issues most important to the campaign
+* Follow users across campaign's many projects, including lessig2016.us, fixdemocracyfirst.us, etc.
+
+
+Currently available and usable data points
+* mailing list subscriptions
+* donations
+Use case
+* top-of-page real estate should not be used to show mailing list to a current subscriber
+* should be used for driving toward other objectives
+Tasks
+* COMPLETE => Set up Kissmetrics account: Completed by @bucchere
+* COMPLETE => WAITING TO DEPLOY => Update blog with KISSmetrics analytics code
+   * Completed by @mdavid and pull request made to lessig2016/campaign:master 
+      * Waiting for early Saturday morning to deploy to ensure any issues with the deploy have the least possible impact on site visitors.
+* TODO? => Create S3 bucket
+* TODO => Implement scripting to websites for baseline data aggregation (views, referrers, etc.)
+* TODO => Implement user events for more granular data aggregation
+* TODO => Research A/B testing capabilities of Kissmetrics
+   * TODO => Add issue pages for harvesting visitor intent
+   * TODO => Import data for retroactive analysis
+* TODO => Analyze snowplow to determine if it could work as an additional and/or replacement analytics package[a].
+More KISSMETRICS Info
+From the September 23rd meeting notes @gg provides the following data points
+
+
+@gg Led the discussion about Kissmetrics.
+1. arbitrary event capture that links events to users
+2. as user moves through funnels, we link additional events/identities
+3. interface allows you to model funnels, dropoff
+4. really easy to get raw data for analysis - batch sync to S3 (not real-time)
+5. data is in JSON format, one object per event
+6. sessionization
+7. kissmetrics cookie is cross-domain
+8. supports basic page views/referrers
+9. supports data import for retroactive visitor analysis
+   1. drive user back to site to attach analysis to browser (user id to cookie to associate data to user)
+More Snowplow Info
+1. Needs to be researched. David Maust (@dmaust) is taking ownership.
+2. Offers open source with commercial support. Commercial version comparison and pricing
+3. Open source version runs on AWS:
+   1. Provides javascript tracking code
+   2. Uses Cloudfront logging for data collection, which writes raw tsv logs to S3. 
+   3. Also provides processing tools using elastic mapreduce for collected data.
+   4. Can load processed data into a relational data warehouse (PostgreSQL).
+More Splunk Info
+1. My lunch with Glenn Block has been rescheduled to Monday, October 5th. More info to come after our meetup.
+Project Priorities
+1. Deployments
+   1. DONE => Wordpress (campaign repo) => https://github.com/Lessig2016/campaign/pull/9
+   2. DONE => Pledge Service => https://github.com/Lessig2016/pledgeservice/pull/21
+   3. DONE => Teams => https://github.com/Lessig2016/teams/pull/6
+   4. DONE => Fix Democracy First => https://github.com/Lessig2016/fixdemocracyfirst/pull/11
+   5. Call Tool
+ Task
+* Figure out how to best import our data into KISSmetrics. Dan Acheson (@data_dan)
+   * From @data_dan on Slack:
+Hi all,  I did a little research on importing external data into Kissmetrics , and it looks like it should be pretty easy: http://support.kissmetrics.com/integrations/json-import/
+
+
+The import takes JSON, and there are just a few required fields: 
+_p which is the Kissmetrics identity of the individual (e.g., an email address)
+_t, the time of the event.
+
+
+Beyond that, we can also add  KM events (probably having a poll event wouldn't be a bad idea), in addition to any other properties we might choose. (edited)
+
+
+So, to get the poll data in there, it looks like we just have a little ETL to do, providing, of course, we have or can get the poll respondent's information in a form that corresponds to the KIssmetrics identity.
+
+
+If this data import, or something similar, is going to be a recurring thing, we just need to set up an S3 bucket that Kissmetrics can access. Looks like it would update data sources every hour, but there are some limits to the extent of the import being done depending on the file size.   See: http://support.kissmetrics.com/integrations/json-import/recurring-json-import.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[a]I would argue that as it relates to the life work of @lessig, an open source solution -- if it provides the ability to accomplish what we’re trying to accomplish -- would be the preferred solution.
